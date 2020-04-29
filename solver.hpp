@@ -36,7 +36,9 @@ double make_it_simple_for(string equation);
 
 
 namespace solver{
+    std::complex<double> make_it_simple_for_y(string equation);
     double solve(string equation);
+
     // string& operator()(string y);
     class mystring {
     public:
@@ -94,7 +96,7 @@ namespace solver{
 
          friend ComplexVariable operator*(double x,ComplexVariable y);
          friend ComplexVariable operator*(ComplexVariable y, double x);
-
+         friend std::complex<double> simplecomplex(string equation);
          friend mystring operator+(ComplexVariable y, double x);
          friend mystring operator+(double x,ComplexVariable y );
          friend mystring operator+(ComplexVariable y,std::complex<double> w);
