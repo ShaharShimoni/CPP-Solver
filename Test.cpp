@@ -29,7 +29,7 @@ TEST_CASE("simple equation") {
      CHECK(solve(x-20==-5)==15);
      CHECK(solve(x+20==5)==-15);
      CHECK(solve(x+25==5)==-20);
-     CHECK(solve(2*x== -4 )==-2);   //check this one
+     CHECK(solve(2*x== -4 )==-2);
      CHECK(solve(3*x+5==11)==2);
      CHECK(solve(2*x-4.0 == 10.0)==7);
      CHECK(solve(4*x/2-4.0 == 10.0)==7);
@@ -51,19 +51,19 @@ TEST_CASE("test 2"){
             CHECK(solve(2*(x^2)==18)==3);
             CHECK(solve((x^2)+5==30)==5);
             CHECK(solve(2*x-2==4)==3);
-            CHECK((solve((x^2)==16)==4));   //-4
-            CHECK(solve((x^2)==25)==5 );  //-5
+            CHECK(((solve((x^2)==16)==4)||(solve((x^2)==16)==-4)));
+            CHECK((solve((x^2)==25)==5 ||solve((x^2)==25)==-5));
             CHECK(solve((x^2)+2==18)==4);
-            CHECK(solve((x^2) + 2*x + 4.0 == 20 + 6.0*x/2 - x)==4);   //-4 also
-            CHECK(solve((x^2) + 2*x == 16 + 6.0*x/2 - x)==4);   //-4 also
-            CHECK(solve(2*(x^2)  == 32 )==4);   //-4 also
+            CHECK((solve((x^2) + 2*x + 4.0 == 20 + 6.0*x/2 - x)==4||solve((x^2) + 2*x + 4.0 == 20 + 6.0*x/2 - x)==-4));
+            CHECK((solve((x^2) + 2*x == 16 + 6.0*x/2 - x)==4||solve((x^2) + 2*x == 16 + 6.0*x/2 - x)==-4));
+            CHECK((solve(2*(x^2)  == 32 )==4||solve(2*(x^2)  == 32 )==-4));
             CHECK(solve(3*(x^2)-15 == 60 )==5);
-            CHECK(solve((x^2)==81)==9);
-            CHECK(solve(2*(x^2)==162)==9);
-            CHECK(solve((x^2) + 2*x+5 == 21 + 6.0*x/2 - x)==4);   //-4 also
+            CHECK((solve((x^2)==81)==9||solve((x^2)==81)==-9));
+            CHECK((solve(2*(x^2)==162)==9||solve(2*(x^2)==162)==-9));
+            CHECK((solve((x^2) + 2*x+5 == 21 + 6.0*x/2 - x)==4||solve((x^2) + 2*x+5 == 21 + 6.0*x/2 - x)==-4));
             CHECK(solve(3*(x^2)-30 == 45 )==5);
-            CHECK(solve((x^2)==1)==1);// also -1
-            CHECK(solve((x^2)==100)==10);// also -10
+            CHECK((solve((x^2)==1)==1||solve((x^2)==1)==-1));// also -1
+            CHECK((solve((x^2)==100)==10||solve((x^2)==100)==-10));
 }
 
 TEST_CASE("CHECK_THROWS"){
@@ -88,7 +88,6 @@ TEST_CASE("CHECK_THROWS"){
     CHECK_THROWS(solve(((x^4)+3*x+5)==100));
     CHECK_THROWS(solve(((x^3)+3*x+2)==100));
 
-    // CHECK_THROWS(solve(20==100));
 }
 TEST_CASE("test ComplexVariable"){
 
@@ -96,26 +95,26 @@ TEST_CASE("test ComplexVariable"){
     CHECK(solve(2*y-4 == 10)==std::complex<double>(7,0));
     CHECK(solve(y-4 == 10)==std::complex<double>(14,0));
     CHECK(solve(y == 10)==std::complex<double>(10,0));
-    CHECK(solve((y^2) == 16)==std::complex<double>(4,0)); //(-4,0)
-    CHECK(solve((y^2) == -16)==std::complex<double>(0,4)); //(0,-4)
-    CHECK(solve((y^2) + 2*y + 4 == 20 + 6*y/2 - y)==std::complex<double>(4,0)); //(-4,0)
-    CHECK(solve(y+5i == 2*y+3i)==std::complex<double>(0,2)); //(-4,0)
-    CHECK(solve((y^2)==-100)==std::complex<double>(0,10)); //(0,-10)
-    CHECK(solve(2*(y^2)==-200)==std::complex<double>(0,10)); //(0,-10)
-    CHECK(solve((y^2)==100)==std::complex<double>(10,0)); //(-10,0)
-    CHECK(solve((y^2)==-25)==std::complex<double>(0,5)); //(0,-5)
-    CHECK(solve(2*(y^2)==-50)==std::complex<double>(0,5)); //(0,-5)
-    CHECK(solve((y^2)==-9)==std::complex<double>(0,3)); //(0,-3)
-    CHECK(solve((y^2)==-81)==std::complex<double>(0,9)); //(0,-3)
-    CHECK(solve((y^2) + 3*y + 4 == 20 + 6*y/2 )==std::complex<double>(4,0)); //(-4,0)
-    CHECK(solve((y^2) + 3*y == 16 + 3*y )==std::complex<double>(4,0)); //(-4,0)
-    CHECK(solve((y^2) + 6*y/2 == 16 + 9*y/3 )==std::complex<double>(4,0)); //(-4,0)
-    CHECK(solve((y^2)==9)==std::complex<double>(3,0));  //-3
-    CHECK(solve((y^2)+5==30)==std::complex<double>(5,0)); //-5
-    CHECK(solve(2*y-2==4)==std::complex<double>(3,0));   //-3
-    CHECK(solve((y^2) == 16)==std::complex<double>(4,0)); //(-4,0)
-    CHECK(solve((y^2)==25)==std::complex<double>(5,0));  //-5
-    CHECK(solve((y^2)+2==18)==std::complex<double>(4,0));  //-4
+    CHECK((solve((y^2) == 16)==std::complex<double>(4,0)||solve((y^2) == 16)==std::complex<double>(-4,0)));
+    CHECK((solve((y^2) == -16)==std::complex<double>(0,4)||solve((y^2) == -16)==std::complex<double>(0,-4)));
+    CHECK((solve((y^2) + 2*y + 4 == 20 + 6*y/2 - y)==std::complex<double>(4,0)||solve((y^2) + 2*y + 4 == 20 + 6*y/2 - y)==std::complex<double>(-4,0))); //(-4,0)
+    CHECK((solve(y+5i == 2*y+3i)==std::complex<double>(0,2)||solve(y+5i == 2*y+3i)==std::complex<double>(0,-2)));
+    CHECK((solve((y^2)==-100)==std::complex<double>(0,10)||solve((y^2)==-100)==std::complex<double>(0,-10)));
+    CHECK((solve(2*(y^2)==-200)==std::complex<double>(0,10)||solve(2*(y^2)==-200)==std::complex<double>(0,-10)));
+    CHECK((solve((y^2)==100)==std::complex<double>(10,0)||solve((y^2)==100)==std::complex<double>(-10,0)));
+    CHECK((solve((y^2)==-25)==std::complex<double>(0,5)||solve((y^2)==-25)==std::complex<double>(0,-5)));
+    CHECK((solve(2*(y^2)==-50)==std::complex<double>(0,5)||solve(2*(y^2)==-50)==std::complex<double>(0,-5)));
+    CHECK((solve((y^2)==-9)==std::complex<double>(0,3)||solve((y^2)==-9)==std::complex<double>(0,-3)));
+    CHECK((solve((y^2)==-81)==std::complex<double>(0,9)||solve((y^2)==-81)==std::complex<double>(0,-9)));
+    CHECK((solve((y^2) + 3*y + 4 == 20 + 6*y/2 )==std::complex<double>(4,0)||solve((y^2) + 3*y + 4 == 20 + 6*y/2 )==std::complex<double>(-4,0))); //(-4,0)
+    CHECK((solve((y^2) + 3*y == 16 + 3*y )==std::complex<double>(4,0)||solve((y^2) + 3*y == 16 + 3*y )==std::complex<double>(-4,0))); //(-4,0)
+    CHECK((solve((y^2) + 6*y/2 == 16 + 9*y/3 )==std::complex<double>(4,0)||solve((y^2) + 6*y/2 == 16 + 9*y/3 )==std::complex<double>(-4,0))); //(-4,0)
+    CHECK((solve((y^2)==9)==std::complex<double>(3,0)||solve((y^2)==9)==std::complex<double>(-3,0)));  //-3
+    CHECK((solve((y^2)+5==30)==std::complex<double>(5,0)||solve((y^2)+5==30)==std::complex<double>(-5,0))); //-5
+    CHECK((solve(2*y-2==4)==std::complex<double>(3,0)||solve(2*y-2==4)==std::complex<double>(-3,0)));   //-3
+    CHECK((solve((y^2) == 16)==std::complex<double>(4,0)||solve((y^2) == 16)==std::complex<double>(-4,0))); //(-4,0)
+    CHECK((solve((y^2)==25)==std::complex<double>(5,0)||solve((y^2)==25)==std::complex<double>(-5,0)));  //-5
+    CHECK((solve((y^2)+2==18)==std::complex<double>(4,0)||solve((y^2)+2==18)==std::complex<double>(-4,0)));  //-4
 
 
 
