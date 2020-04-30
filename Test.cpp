@@ -131,5 +131,9 @@ TEST_CASE("CHECK_THROWS ComplexVariable ") {
     CHECK_THROWS(solve(2*(y ^ -2) == -200));
     CHECK_THROWS(solve((y ^ -2) == -16));
     CHECK_THROWS(solve((y^5)+2==18));
+    CHECK_THROWS(solve((y ^ 8)==-16));
+    CHECK_THROWS(solve((y ^ 9)==-16));
+
+
 
 }
