@@ -66,9 +66,11 @@ namespace solver{
         friend string operator+(double x,RealVariable y );
         friend string operator+(string x,RealVariable y );
         friend RealVariable& operator/(RealVariable x,double y );
-        friend string& operator== (solver::RealVariable y,double x);
+        friend string operator== (solver::RealVariable y,double x);
         friend RealVariable operator-(RealVariable y);
         friend string operator-(RealVariable y, double x);
+        friend string operator-(RealVariable y, RealVariable x);
+
         friend string operator-(double x,RealVariable y );
         friend string operator-(string y, RealVariable x);
         friend string &operator^(RealVariable y, double x);

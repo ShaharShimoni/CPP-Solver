@@ -13,9 +13,6 @@
 using namespace solver;
 double simple_func(string left,string right){
 
-//    cout<<"left="<<left<<endl;
-//    cout<<"right="<<right<<endl;
-//    cout<<"simple"<<endl;
     string a = right;
     double r;
     stringstream dstream(a);
@@ -85,10 +82,9 @@ double make_it_simple(string equation){
 static int flag=0;
 double make_it_simple_for(string equation){   //(x^2)==16 example
 
-  //  cout<<"in make it simple for===     "<<equation<<endl;
-    double a;   //for the x1,1=-b+- (b^2-4ac)/2a
+    double a=0;   //for the x1,1=-b+- (b^2-4ac)/2a
     double b=0;
-    double c;
+    double c=0;
     int i=0;
     string save;
     string aa;
@@ -99,6 +95,11 @@ double make_it_simple_for(string equation){   //(x^2)==16 example
            save+=equation.at(i);
            i++;
         }
+
+        if(save==""){
+            save+="-";
+        }
+
         sign=equation.at(i);
 
         if (save.find("x^2") != std::string::npos){  //  a
@@ -139,7 +140,6 @@ double make_it_simple_for(string equation){   //(x^2)==16 example
         }
         else
         if (save.find("x") != std::string::npos){  //   b
-           // cout<<"find x"<<endl;
             string ans;
             int j=0;
             while(save.at(j)!='x'){
@@ -165,7 +165,6 @@ double make_it_simple_for(string equation){   //(x^2)==16 example
         }
         else{  //c
 
-           // cout<<"finf c"<<endl;
             double temp;
             int minos=0;
             if(save.at(0)=='-'){
@@ -191,6 +190,7 @@ double make_it_simple_for(string equation){   //(x^2)==16 example
     while(i<equation.size()-1){   //right side of equation
         while(equation.at(i)!='+'&& equation.at(i)!='-' && i<equation.size()-1){
             save+=equation.at(i);
+
             i++;
 
         }
@@ -224,10 +224,9 @@ double make_it_simple_for(string equation){   //(x^2)==16 example
                dstream >> temp;
                a = a + temp * -1;
                save = equation.at(i);
-               //    cout<<"save="<<save<<endl;
                i = i + 1;
            } else if (save.find("x") != std::string::npos) {  //   b
-               // cout<<"find x"<<endl;
+
                string ans;
                int j = 0;
                while (save.at(j) != 'x') {
@@ -255,13 +254,12 @@ double make_it_simple_for(string equation){   //(x^2)==16 example
 
                i = i + 1;
            } else {  //c
-             //  cout<<"save "<<save<<endl;
 
                int minos = 0;
                if (save.at(0) == '-') {
                    minos = 1;
                    save = save.substr(1, save.size());
-                 //  cout<<"save "<<save<<endl;
+
                }
                if (save.at(0) == '+') {
                    save = save.substr(1, save.size());
@@ -284,69 +282,37 @@ double make_it_simple_for(string equation){   //(x^2)==16 example
 
     }
 
+    if(a==0 && b==0){    //today!!!
+        throw exception();
+    }
+    if(a==0 && b!=0){
+        return -c/b;
+
+    }
     double w= sqrt(b*b-4*a*c);
-   // cout<<"w="<<w<<endl;
+
     if(w!=double(w)){
         throw std::runtime_error("There is no real solution");
     }
-    double ans=-b+w/(2*a);
+    double ans=(-1*b+w)/(2*a);
+    if(ans==-0.0 ){
+        ans=0;
+    }
     return ans;
 
 }
 
 double solver::solve(string equation) {
-    string in = "^";
-
-    if (equation.find(in) == std::string::npos) {    //simple equation without x^2
-
-        string in2 = "+";
-        string in3 = "-";
-        string in4="==-";
-        if (equation.find(in2) == std::string::npos)  {
-            if (equation.find(in3) == std::string::npos ||equation.find(in4) != std::string::npos ) { //and wothout + -
-                string saveleft = "";
-                string saveright = "";
-                string savex = "";
-                int i = 0;
-                while (equation.at(i) != 'x') {
-                    saveleft += equation.at(i);
-                    i++;
-                }
-                while (equation.at(i) != '=') {
-                    savex += equation.at(i);
-                    i++;
-                }
-                i++;
-                i++;
-                while (i != equation.size()) {
-                    saveright += equation.at(i);
-                    i++;
-                }
-                    cout<<"saveleft="<<saveleft<<endl;
-                   cout<<"right="<<saveright<<endl;
-                    cout<<"simple"<<endl;
-                double ans = simple_func(saveleft, saveright);
-                return ans;
-            } // there is minos
-
-        }
-        else
-        {    //there is +/-
-
-            double c = make_it_simple(equation);
-            return c;
-        }
-    }
-    else{
 
         double c=make_it_simple_for(equation);
         return c;
-    }
+
 
 
 }
 
 solver::RealVariable& solver::operator* (double y,solver::RealVariable x){
+
     double in_front_temp=y*x.in_front;
     solver::RealVariable temp;
     temp.x=x.x;
@@ -357,6 +323,7 @@ solver::RealVariable& solver::operator* (double y,solver::RealVariable x){
 
 }
 solver::mystring solver::operator*(double x, solver::mystring y){
+
     string ans;
     ostringstream oss;
     oss.precision(1);
@@ -369,6 +336,7 @@ solver::mystring solver::operator*(double x, solver::mystring y){
     return q;
 }
 string operator* (double y,string x){
+
     string ans;
 
     double n2 = y;
@@ -427,6 +395,25 @@ string solver::operator- (solver::RealVariable y,double x){
 
     return tamp;
 }
+string solver::operator- (solver::RealVariable y,solver::RealVariable x){
+    double n2 = y.in_front;
+    ostringstream oss;
+    oss.precision(2);
+    oss << fixed << n2;
+
+    string answer=oss.str();
+    answer+="x";
+    answer+="-";
+
+    double n = x.in_front;
+    ostringstream oss2;
+    oss2.precision(2);
+    oss2 << fixed << n;
+    answer+=oss2.str();
+    answer+="x";
+    return answer;
+
+}
 string solver::operator- (double x,solver::RealVariable y){
     double n3 = x;
     ostringstream oss2;
@@ -447,6 +434,7 @@ string solver::operator- (double x,solver::RealVariable y){
 }
 
 string solver::operator- (string y,solver::RealVariable x){
+
     string ans;
     ans.append(y);
     ans.append("-");
@@ -513,6 +501,7 @@ string operator+(string y, double x) {
     return g;
 }
 string operator-(string y, double x) {
+
     string ans="";
     ans.append(y);
     ans.append("-");
@@ -526,52 +515,12 @@ string operator-(string y, double x) {
 
     return g;
 }
+
 string operator== (string y, double x){
-    // cout<<" string y="<<y<< "=="<<x<< endl;
     string cansolve="x";
     if (y.find(cansolve) == std::string::npos){
         throw exception();
     }
-        string in = "^";
-    if (y.find(in) == std::string::npos) {   //no ^
-        char sign;
-        int i = 0;
-        string left;
-        while (y.at(i) != '-' && y.at(i) != '+') {
-            left += y.at(i);
-            i++;
-        }
-        sign = y.at(i);
-        i++;
-        string left2;
-        while (i <= y.size() - 1) {
-            left2 += y.at(i);
-            i++;
-        }
-        double l2;
-        stringstream dstream(left2);
-        dstream >> l2;
-        if (sign == '+')
-            x = x + l2 * (-1);
-        else
-            x = x + l2;
-        int j = 0;
-        string inf = "";
-        while (left.at(j) != 'x') {
-            inf += left.at(j);
-            j++;
-        }
-        double l;
-        stringstream dstream2(inf);
-        dstream2 >> l;
-        solver::RealVariable z;
-        z.in_front = l;
-
-        string &temp = operator==(z, x);
-        string a = temp;
-        return a;
-    }
-    else {
 
         string a;
         a.append(y);
@@ -582,8 +531,8 @@ string operator== (string y, double x){
         a.append(oss3.str());
 
         string b=a;
+
         return b;
-    }
 
 }
 
@@ -634,12 +583,13 @@ string solver::operator== (string x,solver::RealVariable y){
     return t;
 }
 
- string& solver::operator== (solver::RealVariable y,double x){
+ string solver::operator== (solver::RealVariable y,double x){
+
     double n2 = y.in_front;
     ostringstream oss;
     oss.precision(2);
     oss << fixed << n2;
-    string left= oss.str()+"x";
+    string left= oss.str()+"*x";
     double n = x;
     ostringstream oss2;
     oss2.precision(2);
@@ -656,6 +606,10 @@ string solver::operator== (string x,solver::RealVariable y){
 }
 
 solver::RealVariable& solver::operator/ (solver::RealVariable y,double x) {
+    if(x==0 ||x==0.0){
+        throw exception();
+    }
+
     y.in_front=y.in_front/x;
     return y;
 }
@@ -668,7 +622,6 @@ std::complex<double> solver::simplecomplex(string equation){   //without y^2
     if (equation.find(g) != std::string::npos) {
         flag=1;
     }
-    cout<<"equation "<<equation<<endl;
     double a;
     double in_front_y;
     int i=0;
@@ -681,7 +634,6 @@ std::complex<double> solver::simplecomplex(string equation){   //without y^2
             save+=equation.at(j);
             j++;
         }
-        cout<<"save= "<<save<<endl;
         string yy="y";
         if (save.find(yy) != std::string::npos){
             string save2;
@@ -719,17 +671,15 @@ std::complex<double> solver::simplecomplex(string equation){   //without y^2
             double l2;
             stringstream dstream(save);
             dstream >> l2;
-            cout<<"l2="<<l2<<endl;
             if(flag==1){
                l2=l2*-1;
             }
-            cout<<"l="<<l2<<endl;
+          //  cout<<"l="<<l2<<endl;
             a=a+l2;
         }
     }
     j=j+2;
-    cout<<"a="<<a<<endl;
-    cout<<"in_front= " <<in_front_y<<endl;
+
 
     while(j<equation.size()-1){  //right side
         string save;
@@ -742,7 +692,6 @@ std::complex<double> solver::simplecomplex(string equation){   //without y^2
         if(j==equation.size()-1){
             save+=equation.at(j);
         }
-        cout<<"save="<<save<<endl;
         string yy="y";
         if (save.find(yy) != std::string::npos){
             string save2;
@@ -788,14 +737,12 @@ std::complex<double> solver::simplecomplex(string equation){   //without y^2
             if(flag==1){
                 l2=l2*-1;
             }
-            cout<<"l2="<<l2<<endl;
             a=a-l2;
-            cout<<"a="<<a<<endl;
         }
 
     }
-    cout<<"a="<<a<<endl;
-    cout<<"in_front= " <<in_front_y<<endl;
+
+
     double t=-a/in_front_y;
     if(flag==1){
         std::complex<double> w= std::complex<double>(0,t);
@@ -820,7 +767,7 @@ std::complex<double> solver::make_it_simple_for_y(string equation){
             save+=equation.at(i);
             i++;
         }
-        cout<<"save="<<save<<endl;
+
         sign=equation.at(i);
         if (save.find("y^2") != std::string::npos){  //  a
             string ans;
@@ -829,7 +776,7 @@ std::complex<double> solver::make_it_simple_for_y(string equation){
                 ans+=save.at(j);
                 j++;
             }
-            cout<<"ans "<<ans<<endl;
+
             if(ans==""){
                 ans="1";
             }
@@ -911,11 +858,6 @@ std::complex<double> solver::make_it_simple_for_y(string equation){
             i++;
         }
 
-//        if(equation.at(equation.size()-1)=='y' && i==equation.size()-1){
-//            cout<<"yess"<<endl;
-//            save+="y";
-//        }
-        cout<<"save="<<save<<endl;
         if(save==""){
             save+="-";
             i++;
@@ -941,7 +883,6 @@ std::complex<double> solver::make_it_simple_for_y(string equation){
                 dstream >> temp;
                 a = a + temp * -1;
                 save = equation.at(i);
-                //    cout<<"save="<<save<<endl;
                 i = i + 1;
             } else if (save.find("y") != std::string::npos) {  //   b
 
@@ -1008,10 +949,6 @@ std::complex<double> solver::make_it_simple_for_y(string equation){
     }
 
 
-    cout<<"a="<<a<<endl;
-    cout<<"b="<<b<<endl;
-    cout<<"c="<<c<<endl;
-
     double ans=-b+w/(2*a);
     std::complex<double> bb;
     if(ii==0) {
@@ -1025,7 +962,6 @@ std::complex<double> solver::make_it_simple_for_y(string equation){
 }
 std::complex<double> solver::solve(mystring equation){
     string in="^";
-    cout<<"equation "<<equation.save<<endl;
     if (equation.save.find(in) == std::string::npos){  //simple function 2*y==10
         std::complex<double> answer=solver::simplecomplex(equation.save);
         return answer;
@@ -1037,11 +973,13 @@ std::complex<double> solver::solve(mystring equation){
 
 }
 solver::ComplexVariable solver::operator*(double x,ComplexVariable y){
+
     ComplexVariable t;
     t.in_front=x*y.in_front;
     return t;
 }
 solver::ComplexVariable solver::operator*(ComplexVariable y, double x){
+
     ComplexVariable ans=operator*(x,y);
     return ans;
 }
@@ -1166,6 +1104,7 @@ solver::mystring solver::operator-(ComplexVariable y, double x){
 
 
 }
+
 solver::mystring solver::operator-(double x,ComplexVariable y ){
     string ans;
     ostringstream oss;
